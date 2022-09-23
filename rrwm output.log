@@ -1,0 +1,92 @@
+--------------------------------------------------------------------
+      name:  <unnamed>
+       log:  \\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\rrwm.
+> log
+  log type:  text
+ opened on:  21 Sep 2022, 11:53:19
+
+. do "\\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\RRWM draft.d
+> o"
+
+. ****** CAnD3 RRWM Data Activity ******
+. import delimited "\\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD
+> 3\gss-12M0025-E-2017-c-31_F1.csv"
+(encoding automatically selected: ISO-8859-1)
+(1,316 vars, 20,602 obs)
+
+. 
+. ***** DATA CLEANING
+. * independent var = highest level of education completed
+. clonevar educ = ehg3_01b
+
+. recode educ (4 5=3) (6=4) (7=5)(96 97 98 99 =.)
+(11235 changes made to educ)
+
+. * dependent var - intend to have child within next 3 years
+. clonevar intendchild = fi_105
+
+. recode intendchild (2=1) (3 4=0) (5 6 7 8 9=.)
+(19925 changes made to intendchild)
+
+. * missings variable
+. egen missings= rmiss(intendchild educ)
+
+. 
+. ***** TABLES & MODELS
+. * descriptives table with no missing cases
+. tabstat intendchild educ if missings==0, statistics(count mean sd 
+> min max)
+
+   Stats |  intend~d      educ
+---------+--------------------
+       N |      8085      8085
+    Mean |  .2042053  3.017811
+      SD |  .4031446  1.120269
+     Min |         0         1
+     Max |         1         5
+------------------------------
+
+. 
+. * logistic regression with no missing cases
+. logistic intendchild educ if missings==0
+
+Logistic regression                                     Number of ob
+> s                                                                 
+>   =  8,085
+                                                        LR chi2(1)  
+>                                                                   
+>   = 123.19
+                                                        Prob > chi2 
+>                                                                   
+>   = 0.0000
+Log likelihood = -4030.8463                             Pseudo R2   
+>                                                                   
+>   = 0.0151
+
+--------------------------------------------------------------------
+> ----------
+ intendchild | Odds ratio   Std. err.      z    P>|z|     [95% conf.
+>  interval]
+-------------+------------------------------------------------------
+> ----------
+        educ |   1.319147   .0333301    10.96   0.000     1.255412  
+>   1.386118
+       _cons |   .1081444   .0092959   -25.88   0.000     .0913768  
+>   .1279889
+--------------------------------------------------------------------
+> ----------
+Note: _cons estimates baseline odds.
+
+. 
+. 
+. 
+. 
+end of do-file
+
+. log close
+      name:  <unnamed>
+       log:  \\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\rrwm.
+> log
+  log type:  text
+ closed on:  21 Sep 2022, 11:53:36
+--------------------------------------------------------------------
