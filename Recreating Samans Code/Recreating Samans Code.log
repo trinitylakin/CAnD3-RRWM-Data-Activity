@@ -1,0 +1,176 @@
+--------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  \\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\Recreating Samans Code.log
+  log type:  text
+ opened on:  26 Sep 2022, 13:33:57
+
+. do "\\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\Recreating Samans code.do"
+
+. import delimited "\\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\gss-12M0025-E-2017-c-31_F1.csv"
+(encoding automatically selected: ISO-8859-1)
+(1,316 vars, 20,602 obs)
+
+. ** data cleaning
+. clonevar edu_cat = ehg3_01b
+
+. recode edu_cat (4 5 6 7=3)(96 97 98 99=.)
+(11235 changes made to edu_cat)
+
+. clonevar loc_dico = luc_rst
+
+. recode loc_dico (2 3=0)(6 7 8 9=.)
+(4675 changes made to loc_dico)
+
+. ** survey weights
+. svyset [pweight = wght_per], bsrweight(wtbs_001-wtbs_500)
+
+ Sampling weights: wght_per
+              VCE: linearized
+Bootstrap weights: wtbs_001 .. wtbs_500
+      Single unit: missing
+         Strata 1: <one>
+  Sampling unit 1: <observations>
+            FPC 1: <zero>
+
+. ** freq tables ???
+. svy bootstrap, bsn(25) mse dof(500): tab loc_dico
+(running tabulate on estimation sample)
+
+                                                  Number of obs   =     20,602
+                                                  Population size = 30,302,287
+                                                  Replications    =        500
+                                                  Design df       =        500
+
+----------------------
+  LUC_RST | proportion
+----------+-----------
+        0 |      .1618
+        1 |      .8382
+          | 
+    Total |          1
+----------------------
+Key: proportion = Cell proportion
+
+. svy bootstrap, bsn(25) mse dof(500): tab loc_dico edu_cat
+(running tabulate on estimation sample)
+
+                                                  Number of obs   =     20,261
+                                                  Population size = 29,780,285
+                                                  Replications    =        500
+                                                  Design df       =        500
+
+--------------------------------------
+          |          EHG3_01B         
+  LUC_RST |     1      2      3  Total
+----------+---------------------------
+        0 | .0393  .0432  .0788  .1614
+        1 | .1078   .206  .5249  .8386
+          | 
+    Total | .1471  .2492  .6037      1
+--------------------------------------
+Key: Cell proportion
+
+  Pearson:
+    Uncorrected   chi2(2)         =  338.0992
+    Design-based  F(1.99, 995.94) =    4.0791     P = 0.0173
+
+. svy bootstrap, bsn(25) mse dof(500): tab loc_dico sex
+(running tabulate on estimation sample)
+
+                                                  Number of obs   =     20,602
+                                                  Population size = 30,302,287
+                                                  Replications    =        500
+                                                  Design df       =        500
+
+-------------------------------
+          |         SEX        
+  LUC_RST |     1      2  Total
+----------+--------------------
+        0 | .0805  .0813  .1618
+        1 |  .413  .4252  .8382
+          | 
+    Total | .4935  .5065      1
+-------------------------------
+Key: Cell proportion
+
+  Pearson:
+    Uncorrected   chi2(1)         =    0.2634
+    Design-based  F(1, 500)       =    0.0069     P = 0.9337
+
+. ** regression
+. svy bootstrap, bsn(25) mse dof(500): logistic loc_dico edu_cat sex
+(running logistic on estimation sample)
+
+Bootstrap replications (500)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+
+Survey: Logistic regression                       Number of obs   =     20,261
+                                                  Population size = 29,780,285
+                                                  Replications    =        500
+                                                  Design df       =        500
+                                                  F(2, 499)       =       3.65
+                                                  Prob > F        =     0.0266
+
+------------------------------------------------------------------------------
+             |   Observed   Bstrap *
+    loc_dico | odds ratio   std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     edu_cat |   1.536202   .2438751     2.70   0.007      1.12458    2.098486
+         sex |   1.009592   .2431147     0.04   0.968     .6290349    1.620379
+       _cons |   1.847047    .962608     1.18   0.240     .6634205    5.142414
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. svy bootstrap, bsn(25) mse dof(500): logit loc_dico edu_cat sex
+(running logit on estimation sample)
+
+Bootstrap replications (500)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+
+Survey: Logistic regression                       Number of obs   =     20,261
+                                                  Population size = 29,780,285
+                                                  Replications    =        500
+                                                  Design df       =        500
+                                                  F(2, 499)       =       3.65
+                                                  Prob > F        =     0.0266
+
+------------------------------------------------------------------------------
+             |   Observed   Bstrap *
+    loc_dico | coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     edu_cat |    .429313    .158752     2.70   0.007     .1174098    .7412163
+         sex |   .0095458    .240805     0.04   0.968    -.4635685    .4826601
+       _cons |   .6135881   .5211605     1.18   0.240    -.4103462    1.637523
+------------------------------------------------------------------------------
+
+. 
+. 
+. 
+end of do-file
+
+. log close
+      name:  <unnamed>
+       log:  \\smb-isl01.fsu.edu\citrix\tal15b\Documents\CAnD3\Recreating Samans Code.log
+  log type:  text
+ closed on:  26 Sep 2022, 13:41:19
+--------------------------------------------------------------------------------------------------------------------------
