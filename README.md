@@ -8,6 +8,7 @@ Included in this package are the typed program outlining coding instructions, th
 For this project, I used the provided GSS dataset to create a descriptives table and ran a logistical regression to assess whether level of education impacts the intention to have a child within the next three years.
 
 **Update 10/5/22: Uploaded Stata do-file and log file from the code I recreated using Saman's written program
+**Update 10/11/22: Uploaded Replicability Report
 
 <strong> Program Specs: </strong>
 
